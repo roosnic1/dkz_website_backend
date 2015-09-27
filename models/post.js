@@ -5,8 +5,8 @@ var PostSchema = new Schema({
   title: String,
   text: String,
   author: String,
-  created: Date,
-  updated: Date
+  created: Number,
+  updated: Number
 });
 
 module.exports = mongoose.model('Post', PostSchema);

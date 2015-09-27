@@ -10,8 +10,8 @@ var PlaySchema = new Schema({
   writer: String,
   orgWriter: String,
   music: String,
-  created: Date,
-  updated: Date
+  created: Number,
+  updated: Number
 });
 
 module.exports = mongoose.model('Play', PlaySchema);
