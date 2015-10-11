@@ -36,7 +36,7 @@ var saveToFile = function(dataURL) {
       if (err) {
         reject(err);
       } else {
-        resolve('media/' + fileName);
+        resolve('media/img/' + fileName);
       }
     });
   });
