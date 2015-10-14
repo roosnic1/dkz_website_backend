@@ -4,6 +4,7 @@ var router = express.Router();
 var posts = require('./api/post');
 var plays = require('./api/play');
 var members = require('./api/member');
+var historys = require('./api/history');
 var images = require('./api/image');
 
 router.route('/posts')
@@ -32,6 +33,15 @@ router.route('/members/:member_id')
 	.get(function(req, res) { members.getSingleMember(req, res, req.params.member_id) })
 	.put(function(req, res) { members.updateMember(req, res, req.params.member_id) })
 	.delete(function(req, res) { members.deleteMember(req, res, req.params.member_id) });
+
+router.route('/histories')
+	.post(function(req, res) { historys.addHistory(req, res) })
+	.get(function(req, res) { historys.getAllHistories(req, res) });
+
+router.route('/histories/:history_id')
+	.get(function(req, res) { historys.getSingleHistory(req, res, req.params.history_id) })
+	.put(function(req, res) { historys.updateHistory(req, res, req.params.history_id) })
+	.delete(function(req, res) { historys.deleteHistory(req, res, req.params.history_id) });
 
 router.route('/images')
 	.post(function(req, res) { images.addImage(req, res) })
