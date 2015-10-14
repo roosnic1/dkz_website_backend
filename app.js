@@ -1,3 +1,5 @@
+//TODO: return proper error status
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -52,12 +54,14 @@ app.use(function(req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
+    console.log(req.originalUrl);
+    console.log(err);
+    res.sendStatus(err.status || 500);
     /*res.render('error', {
       message: err.message,
       error: err
     });*/
-    console.log(err);
+
   });
 }
 
