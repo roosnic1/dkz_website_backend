@@ -5,6 +5,7 @@ var posts = require('./api/post');
 var plays = require('./api/play');
 var members = require('./api/member');
 var historys = require('./api/history');
+var feedbacks = require('./api/feedback');
 var images = require('./api/image');
 
 router.route('/posts')
@@ -42,6 +43,15 @@ router.route('/histories/:history_id')
 	.get(function(req, res) { historys.getSingleHistory(req, res, req.params.history_id) })
 	.put(function(req, res) { historys.updateHistory(req, res, req.params.history_id) })
 	.delete(function(req, res) { historys.deleteHistory(req, res, req.params.history_id) });
+
+router.route('/feedbacks')
+	.post(function(req, res) { feedbacks.add(req, res) })
+	.get(function(req, res) { feedbacks.getAll(req, res) });
+
+router.route('/feedbacks/:item_id')
+	.get(function(req, res) { feedbacks.getSingle(req, res, req.params.item_id) })
+	.put(function(req, res) { feedbacks.update(req, res, req.params.item_id) })
+	.delete(function(req, res) { feedbacks.delete(req, res, req.params.item_id) });
 
 router.route('/images')
 	.post(function(req, res) { images.addImage(req, res) })
