@@ -7,6 +7,10 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
+var request = require('request');
+
+var createJWT = require('jsonwebtoken');
+var validateJWT = require('express-jwt');
 
 mongoose.connect('mongodb://localhost/dkz_website');
 
@@ -19,9 +23,9 @@ var api = require('./routes/api');
 //app.set('view engine', 'jade');
 
 var allowCrossDomain = function(req, res, next) {
-  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, Content-Length, X-Requested-With');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Accept, Authorization, Content-Length, X-Requested-With, Origin');
 
   // intercept OPTIONS method
   if ('OPTIONS' == req.method) {
@@ -40,6 +44,50 @@ app.use(cookieParser());
 app.use(allowCrossDomain);
 app.use('/media', express.static(path.join(__dirname, 'public')));
 app.use('/api', api);
+
+app.secret = '09htfahpkc0qyw4ukrtag0gy20ktarpkcasht';
+
+app.sendToken = function(res, userId) {
+  var token = createJWT.sign(
+      //payload
+      {userId: userId},
+      app.secret,
+      {expiresInMinutes:10}
+    );
+  res.json({token:token});
+  console.log('token sent');
+}
+
+app.post('/get-token', function(req, res) {
+  var googleToken = req.body.password;
+
+  request('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + googleToken, function(error, response, body) {
+    if (!error && response.statusCode === 200) {
+      console.log('Google token valid');
+      var userId = JSON.parse(body).user_id;
+      var userEmail = JSON.parse(body).email;
+      console.log(userId);
+      console.log(userEmail);
+      app.sendToken(res, userId);
+    } else {
+      console.log('Failed to validate Google token');
+      res.send({});
+    }
+  });
+});
+
+app.post('/refresh-token', bodyParser.json(), function(req, res) {
+  var oldToken = req.body.token;
+  createJWT.verify(oldToken, app.secret, function(err, decodedToken) {
+    if (!err) {
+      console.log('Refreshing token for user', decodedToken.userId);
+      app.sendToken(res, decodedToken.userId);
+    } else {
+      console.log('Error while trying to refresh token', err);
+      res.send({});
+    }
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
