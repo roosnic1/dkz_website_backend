@@ -23,5 +23,5 @@ install:
 script:
 - grunt build
 
-after_script: ./deploy.sh
+after_success: ./deploy.sh
 
