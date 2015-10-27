@@ -14,6 +14,7 @@ cache:
 before_install:
 - openssl aes-256-cbc -K $encrypted_96f6e50b1323_key -iv $encrypted_96f6e50b1323_iv
   -in deploy.enc -out deploy -d
+- chmod 600 deploy
 
 install:
 - npm install
