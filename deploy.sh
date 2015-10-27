@@ -7,7 +7,7 @@ if [ "${TRAVIS_BRANCH}" = "master" ]; then
 fi
 
 if [ "${TRAVIS_BRANCH}" = "development" ]; then
-	echo "Dev Branch"
+	echo "Development Branch"
 	scp -i deploy -r dist/* deploy@vsg-xebaci.cyoncloud.com:/var/www/html/dkz.gifstr.io
 	ssh -i deploy deploy@vsg-xebaci.cyoncloud.com 'cd /var/www/html/dkz.gifstr.io && npm install --production'
 fi
