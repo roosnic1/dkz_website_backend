@@ -13,7 +13,7 @@ install:
   - npm install
 
 script:
-  - echo "Script running"
+  - echo "Script running bla bla"
 
 after_script:
   - test $TRAVIS_BRANCH = master \
