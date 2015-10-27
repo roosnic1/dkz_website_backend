@@ -40,6 +40,7 @@ app.use(cookieParser());
 app.use(allowCrossDomain);
 app.use('/media', express.static(path.join(__dirname, 'public')));
 app.use('/api', api);
+app.use('/', express.static(path.join(__dirname, 'client')));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
