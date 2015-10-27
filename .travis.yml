@@ -1,0 +1,21 @@
+---
+language: node_js
+node_js:
+  - "0.12"
+
+sudo: false
+
+cache:
+  directories:
+    - node_modules
+
+install:
+  - npm install
+
+script:
+  - echo "Script running"
+
+after_script:
+  - test $TRAVIS_BRANCH = master \
+    && echo "master branche" \
+
