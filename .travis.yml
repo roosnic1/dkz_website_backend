@@ -16,6 +16,5 @@ script:
   - echo "Script running bla bla"
 
 after_script:
-  - test $TRAVIS_BRANCH = master \
-    && echo "master branche" \
+  script: ./deploy.sh
 
