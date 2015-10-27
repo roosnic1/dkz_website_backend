@@ -20,7 +20,7 @@ install:
 - npm install
 
 script:
-- echo "Script running bla bla"
+- grunt build
 
 after_script: ./deploy.sh
 
