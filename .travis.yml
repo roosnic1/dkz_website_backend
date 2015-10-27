@@ -15,6 +15,5 @@ install:
 script:
   - echo "Script running bla bla"
 
-after_script:
-  script: ./deploy.sh
+after_script: ./deploy.sh
 
