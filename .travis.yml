@@ -17,6 +17,7 @@ before_install:
 - chmod 600 deploy
 
 install:
+- npm install -g grunt-cli
 - npm install
 
 script:
