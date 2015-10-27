@@ -1,19 +1,25 @@
----
 language: node_js
 node_js:
-  - "0.12"
+- '0.12'
 
 sudo: false
 
+addons:
+  ssh_known_hosts: vsg-xebaci.cyoncloud.com
+
 cache:
   directories:
-    - node_modules
+  - node_modules
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_96f6e50b1323_key -iv $encrypted_96f6e50b1323_iv
+  -in deploy.enc -out deploy -d
 
 install:
-  - npm install
+- npm install
 
 script:
-  - echo "Script running bla bla"
+- echo "Script running bla bla"
 
 after_script: ./deploy.sh
 
