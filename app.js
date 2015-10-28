@@ -8,7 +8,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/dkz_website');
+mongoose.connect(process.env.DATABASE || 'mongodb://localhost/dkz_website');
 
 var app = express();
 
