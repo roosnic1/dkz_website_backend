@@ -12,7 +12,7 @@ var images = require('./api/image');
 *  Workaround until auth is implemented
 **/
 
-if (process.env.environment !== 'DEBUG') {
+if (process.env.NODE_ENV !== 'DEV') {
   router.route('*').post(function(req, res, next) {
     console.log('post intercept');
     if (req.originalUrl !== '/api/feedbacks') {

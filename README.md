@@ -4,5 +4,5 @@
 
 Startcommand
 ```sh
-environment="DEBUG" nodemon --debug bin/www
+NODE_ENV="DEV" nodemon --debug bin/www
 ``

@@ -20,8 +20,7 @@ var api = require('./routes/api');
 
 var allowCrossDomain = function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
-  console.log(process.env.environment);
-  if (process.env.environment !== 'DEBUG') {
+  if (process.env.NODE_ENV !== 'DEV') {
     res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS'); // As long as no auth is in place
   } else {
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
