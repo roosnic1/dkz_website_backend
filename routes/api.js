@@ -8,6 +8,27 @@ var historys = require('./api/history');
 var feedbacks = require('./api/feedback');
 var images = require('./api/image');
 
+/**
+*  Workaround until auth is implemented
+**/
+
+if (process.env.environment !== 'DEBUG') {
+  router.route('*').post(function(req, res, next) {
+    console.log('post intercept');
+    if (req.originalUrl !== '/api/feedbacks') {
+      res.sendStatus(403);
+    } else {
+      next();
+    }
+  }).put(function(req, res, next) {
+    console.log('put intercept');
+    res.sendStatus(403);
+  }).delete(function(req, res, next) {
+    console.log('delete intercept');
+    res.sendStatus(403);
+  });
+}
+
 router.route('/posts')
 	.post(function(req, res) { posts.addPost(req, res) })
 	.get(function(req, res) { posts.getAllPosts(req, res) });
