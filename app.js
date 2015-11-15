@@ -8,6 +8,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
+//mongoose.connect(process.env.DATABASE || 'mongodb://localhost/dkz_website_prod');
 mongoose.connect(process.env.DATABASE || 'mongodb://localhost/dkz_website');
 
 var app = express();
@@ -44,7 +45,28 @@ app.use(cookieParser());
 app.use(allowCrossDomain);
 app.use('/media', express.static(path.join(__dirname, 'public')));
 app.use('/api', api);
-app.use('/', express.static(path.join(__dirname, 'client')));
+app.use('/assets', express.static(path.join(__dirname, 'client/assets')));
+
+app.get('*', function(req, res, next) {
+
+  var options = {
+    root: __dirname + '/client/',
+    dotfiles: 'deny',
+    headers: {
+      'x-timestamp': Date.now(),
+      'x-sent': true
+    }
+  };
+
+  res.sendFile('index.html', options, function(err) {
+    if (err) {
+      console.log(err);
+      res.status(err.status).end();
+    } else {
+      console.log('Sent index.html');
+    }
+  });
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
