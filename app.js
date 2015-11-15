@@ -48,7 +48,6 @@ app.use('/api', api);
 app.use('/assets', express.static(path.join(__dirname, 'client/assets')));
 
 app.get('*', function(req, res, next) {
-
   var options = {
     root: __dirname + '/client/',
     dotfiles: 'deny',
