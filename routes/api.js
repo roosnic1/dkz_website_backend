@@ -1,6 +1,22 @@
 var express = require('express');
 var router = express.Router();
 
+var multer = require('multer');
+
+var uploading = multer({
+  storage: multer.diskStorage({
+    destination: function(req, file, cb) {
+      cb(null, 'public/tmp');
+    },
+    filename: function(req, file, cb) {
+      console.log(file);
+      var ext = file.mimetype.substr(file.mimetype.lastIndexOf('/') + 1);
+      //var fileExt = req.body.fileType.substr(req.body.fileType.indexOf('/') + 1);
+      cb(null, 'img_'  + Date.now() + '.' + ext);
+    }
+  })
+});
+
 var posts = require('./api/post');
 var plays = require('./api/play');
 var members = require('./api/member');
@@ -74,8 +90,12 @@ router.route('/feedbacks/:item_id')
 	.put(function(req, res) { feedbacks.update(req, res, req.params.item_id) })
 	.delete(function(req, res) { feedbacks.delete(req, res, req.params.item_id) });
 
-router.route('/images')
-	.post(function(req, res) { images.addImage(req, res) })
-	.delete(function(req, res) { images.deleteImage(req, res) });
+//router.post('/images', uploading, function(req, res) {});
+
+router.route('/upload_image')
+	.post(uploading.single('image'), function(req, res) { images.addImage(req, res) });
+
+router.route('/insert_image')
+	.post(function(req, res) { images.insertImage(req, res) });
 
 module.exports = router;
