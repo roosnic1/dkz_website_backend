@@ -11,12 +11,19 @@ module.exports = function(grunt) {
         	{src: ['app.js', 'package.json'], expand:true, dest:'dist/'}
         ]
       }
+    },
+    mkdir: {
+      build: {
+        options: {
+          create: ['dist/public']
+        }
+      }
     }
 
   });
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
-
-  grunt.registerTask('build', ['clean:build', 'copy:build'])
+  grunt.loadNpmTasks('grunt-mkdir');
+  grunt.registerTask('build', ['clean:build', 'copy:build', 'mkdir:build']);
 }
