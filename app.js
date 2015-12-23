@@ -7,10 +7,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var request = require('request');
 var unless = require('express-unless');
-
-var createJWT = require('jsonwebtoken');
 var validateJWT = require('express-jwt');
 
 mongoose.connect('mongodb://localhost/dkz_website');
@@ -18,6 +15,7 @@ mongoose.connect('mongodb://localhost/dkz_website');
 var app = express();
 
 var api = require('./routes/api');
+var auth = require('./routes/auth');
 
 // view engine setup
 //app.set('views', path.join(__dirname, 'views'));
@@ -36,8 +34,6 @@ var allowCrossDomain = function(req, res, next) {
   }
 };
 
-app.secret = '09htfahpkc0qyw4ukrtag0gy20ktarpkcasht';
-
 
 
 
@@ -50,11 +46,11 @@ app.use(cookieParser());
 app.use(allowCrossDomain);
 app.use('/media', express.static(path.join(__dirname, 'public')));
 
-app.use(validateJWT({secret: app.secret}).unless({
+app.use(validateJWT({secret: auth.secret}).unless({
   path: [
     { url: '/api/feedbacks', methods: ['POST'] },
-    '/get-token',
-    '/refresh-token',
+    '/auth/get-token',
+    '/auth/refresh-token',
     { url: '/api/posts', methods: ['GET'] },
     { url: '/api/plays', methods: ['GET'] },
     { url: '/api/members', methods: ['GET'] },
@@ -62,52 +58,10 @@ app.use(validateJWT({secret: app.secret}).unless({
   ]
 }));
 
+app.use('/auth',auth);
 app.use('/api', api);
 
 
-
-app.sendToken = function(res, userId) {
-  var token = createJWT.sign(
-      //payload
-      {userId: userId},
-      app.secret,
-      {expiresIn: 600}
-    );
-  res.json({token:token});
-  console.log('token sent');
-};
-
-app.post('/get-token', function(req, res) {
-  var googleToken = req.body.password;
-
-  request('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=' + googleToken, function(error, response, body) {
-    if (!error && response.statusCode === 200) {
-      console.log('Google token valid');
-      var userId = JSON.parse(body).user_id;
-      var userEmail = JSON.parse(body).email;
-      console.log(userId);
-      console.log(userEmail);
-      app.sendToken(res, userId);
-    } else {
-      console.log('Failed to validate Google token');
-      res.send({});
-    }
-  });
-});
-
-
-app.post('/refresh-token', bodyParser.json(), function(req, res) {
-  var oldToken = req.body.token;
-  createJWT.verify(oldToken, app.secret, function(err, decodedToken) {
-    if (!err) {
-      console.log('Refreshing token for user', decodedToken.userId);
-      app.sendToken(res, decodedToken.userId);
-    } else {
-      console.log('Error while trying to refresh token', err);
-      res.send({});
-    }
-  });
-});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
