@@ -19,6 +19,8 @@ sendToken = function(res, userId) {
   console.log('token sent');
 };
 
+var users = {allowedUsers: ['nobody']};
+
 try {
   var users = JSON.parse(fs.readFileSync('./users.json','utf8'));2
 } catch(e) {
@@ -51,7 +53,7 @@ router.post('/get-token', function(req, res) {
 
 router.post('/refresh-token', bodyParser.json(), function(req, res) {
   var oldToken = req.body.token;
-  createJWT.verify(oldToken, app.secret, function(err, decodedToken) {
+  createJWT.verify(oldToken, router.secret, function(err, decodedToken) {
     if (!err) {
       console.log('Refreshing token for user', decodedToken.userId);
       sendToken(res, decodedToken.userId);
