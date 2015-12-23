@@ -8,11 +8,6 @@ var historys = require('./api/history');
 var feedbacks = require('./api/feedback');
 var images = require('./api/image');
 
-router.post('*', function(req, res, next) {
-  console.log(req);
-  next();
-});
-
 router.route('/posts')
 	.post(function(req, res) { posts.addPost(req, res) })
 	.get(function(req, res) { posts.getAllPosts(req, res) });

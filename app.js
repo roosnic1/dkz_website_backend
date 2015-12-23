@@ -8,6 +8,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var request = require('request');
+var unless = require('express-unless');
 
 var createJWT = require('jsonwebtoken');
 var validateJWT = require('express-jwt');
@@ -35,6 +36,11 @@ var allowCrossDomain = function(req, res, next) {
   }
 };
 
+app.secret = '09htfahpkc0qyw4ukrtag0gy20ktarpkcasht';
+
+
+
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
@@ -43,20 +49,33 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(allowCrossDomain);
 app.use('/media', express.static(path.join(__dirname, 'public')));
+
+app.use(validateJWT({secret: app.secret}).unless({
+  path: [
+    { url: '/api/feedbacks', methods: ['POST'] },
+    '/get-token',
+    '/refresh-token',
+    { url: '/api/posts', methods: ['GET'] },
+    { url: '/api/plays', methods: ['GET'] },
+    { url: '/api/members', methods: ['GET'] },
+    { url: '/api/histories', methods: ['GET'] }
+  ]
+}));
+
 app.use('/api', api);
 
-app.secret = '09htfahpkc0qyw4ukrtag0gy20ktarpkcasht';
+
 
 app.sendToken = function(res, userId) {
   var token = createJWT.sign(
       //payload
       {userId: userId},
       app.secret,
-      {expiresInMinutes:10}
+      {expiresInSeconds: 600}
     );
   res.json({token:token});
   console.log('token sent');
-}
+};
 
 app.post('/get-token', function(req, res) {
   var googleToken = req.body.password;
@@ -75,6 +94,7 @@ app.post('/get-token', function(req, res) {
     }
   });
 });
+
 
 app.post('/refresh-token', bodyParser.json(), function(req, res) {
   var oldToken = req.body.token;
