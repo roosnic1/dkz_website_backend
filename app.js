@@ -71,7 +71,7 @@ app.sendToken = function(res, userId) {
       //payload
       {userId: userId},
       app.secret,
-      {expiresInSeconds: 600}
+      {expiresIn: 600}
     );
   res.json({token:token});
   console.log('token sent');
