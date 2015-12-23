@@ -4,6 +4,7 @@ var router = express.Router();
 var request = require('request');
 var createJWT = require('jsonwebtoken');
 var bodyParser = require('body-parser');
+var fs = require('fs');
 
 router.secret = '09htfahpkc0qyw4ukrtag0gy20ktarpkcasht';
 
@@ -18,6 +19,11 @@ sendToken = function(res, userId) {
   console.log('token sent');
 };
 
+try {
+  var users = JSON.parse(fs.readFileSync('./users.json','utf8'));2
+} catch(e) {
+  console.log(e);
+}
 
 
 router.post('/get-token', function(req, res) {
@@ -28,12 +34,16 @@ router.post('/get-token', function(req, res) {
       console.log('Google token valid');
       var userId = JSON.parse(body).user_id;
       var userEmail = JSON.parse(body).email;
-      console.log(userId);
-      console.log(userEmail);
-      sendToken(res, userId);
+      if(users.allowedUsers.indexOf(userEmail) > -1) {
+        sendToken(res, userId);
+        console.log(userId + " - " + userEmail);
+      } else {
+        console.log('User is not allowed');
+        res.status(400).send('User is not allowed');
+      }
     } else {
-      console.log('Failed to validate Google token');
-      res.send({});
+      console.log('Error while validating token');
+      res.status(400).send('Error while validating token');
     }
   });
 });
@@ -47,7 +57,7 @@ router.post('/refresh-token', bodyParser.json(), function(req, res) {
       sendToken(res, decodedToken.userId);
     } else {
       console.log('Error while trying to refresh token', err);
-      res.send({});
+      res.status(400).send('Error while refreshing token');
     }
   });
 });
