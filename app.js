@@ -47,11 +47,9 @@ app.use(cookieParser());
 app.use(allowCrossDomain);
 app.use('/media', express.static(path.join(__dirname, 'public')));
 
-app.use(validateJWT({secret: auth.secret}).unless({
+app.use('/api',validateJWT({secret: auth.secret}).unless({
   path: [
     { url: '/api/feedbacks', methods: ['POST'] },
-    '/auth/get-token',
-    '/auth/refresh-token',
     { url: '/api/posts', methods: ['GET'] },
     { url: '/api/plays', methods: ['GET'] },
     { url: '/api/members', methods: ['GET'] },
