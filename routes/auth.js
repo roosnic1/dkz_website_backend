@@ -22,7 +22,9 @@ sendToken = function(res, userId) {
 var users = {allowedUsers: ['nobody']};
 
 try {
-  var users = JSON.parse(fs.readFileSync('./users.json','utf8'));2
+  var users = JSON.parse(fs.readFileSync('./users.json','utf8'));
+  console.log('Found users json');
+  console.log(users);
 } catch(e) {
   console.log(e);
 }
